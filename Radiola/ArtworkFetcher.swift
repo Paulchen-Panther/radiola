@@ -12,6 +12,7 @@ class ArtworkFetcher: ObservableObject {
     static let shared = ArtworkFetcher()
 
     @Published var artworkImage: NSImage? = nil
+    @Published var appleMusicURL: URL? = nil
 
     private var fetchTask: Task<Void, Never>?
 
@@ -25,6 +26,7 @@ class ArtworkFetcher: ObservableObject {
         fetchTask = Task {
             guard let url = iTunesURL(for: songTitle) else {
                 artworkImage = nil
+                appleMusicURL = nil
                 return
             }
             do {
@@ -37,11 +39,18 @@ class ArtworkFetcher: ObservableObject {
                     let artworkUrl100 = first["artworkUrl100"] as? String
                 else {
                     artworkImage = nil
+                    appleMusicURL = nil
                     return
+                }
+                if let trackViewUrlStr = first["trackViewUrl"] as? String {
+                    appleMusicURL = URL(string: trackViewUrlStr)
+                } else {
+                    appleMusicURL = nil
                 }
                 let highResUrl = artworkUrl100.replacingOccurrences(of: "100x100bb", with: "600x600bb")
                 guard let imageURL = URL(string: highResUrl) else {
                     artworkImage = nil
+                    appleMusicURL = nil
                     return
                 }
                 let (imageData, _) = try await URLSession.shared.data(from: imageURL)
@@ -50,6 +59,7 @@ class ArtworkFetcher: ObservableObject {
             } catch {
                 if !Task.isCancelled {
                     artworkImage = nil
+                    appleMusicURL = nil
                 }
             }
         }
@@ -62,6 +72,7 @@ class ArtworkFetcher: ObservableObject {
         fetchTask?.cancel()
         fetchTask = nil
         artworkImage = nil
+        appleMusicURL = nil
     }
 
     /* ****************************************

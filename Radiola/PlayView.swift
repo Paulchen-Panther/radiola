@@ -16,6 +16,7 @@ class PlayView: NSControl {
     let artworkView = NSImageView()
     private var hideSongWorkItem: DispatchWorkItem?
     private var artworkSubscription: AnyCancellable?
+    private var appleMusicSubscription: AnyCancellable?
 
     /* ****************************************
      *
@@ -72,6 +73,9 @@ class PlayView: NSControl {
         artworkView.layer?.masksToBounds = true
         artworkView.isHidden = true
 
+        let artworkClick = NSClickGestureRecognizer(target: self, action: #selector(artworkClicked))
+        artworkView.addGestureRecognizer(artworkClick)
+
         playButton.translatesAutoresizingMaskIntoConstraints = false
         artworkView.translatesAutoresizingMaskIntoConstraints = false
         songLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -122,6 +126,15 @@ class PlayView: NSControl {
                 guard let self = self else { return }
                 self.artworkView.image = image
                 self.artworkView.isHidden = player.status != .playing || image == nil
+            }
+
+        appleMusicSubscription = ArtworkFetcher.shared.$appleMusicURL
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] url in
+                guard let self = self else { return }
+                self.artworkView.toolTip = url != nil
+                    ? NSLocalizedString("Open in Apple Music", comment: "Artwork tooltip")
+                    : nil
             }
 
         refrreshLabels()
@@ -192,6 +205,14 @@ class PlayView: NSControl {
         onlyStationLabel.isVisible = songLabel.stringValue.isEmpty
         songLabel.isVisible = !onlyStationLabel.isVisible
         stationLabel.isVisible = !onlyStationLabel.isVisible
+    }
+
+    /* ****************************************
+     *
+     * ****************************************/
+    @objc private func artworkClicked() {
+        guard let url = ArtworkFetcher.shared.appleMusicURL else { return }
+        NSWorkspace.shared.open(url)
     }
 
     /* ****************************************

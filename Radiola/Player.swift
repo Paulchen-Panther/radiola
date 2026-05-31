@@ -275,6 +275,12 @@ class Player: NSObject {
             name: Notification.Name.PlayerMetadataChanged,
             object: nil,
             userInfo: ["title": songTitle])
+
+        if nowPlaing?.isEmpty != false {
+            ArtworkFetcher.shared.clear()
+        } else if isPlaying && !songTitle.isEmpty {
+            ArtworkFetcher.shared.fetch(for: songTitle)
+        }
     }
 
     /* ****************************************

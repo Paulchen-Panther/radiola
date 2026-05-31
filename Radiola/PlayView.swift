@@ -6,13 +6,19 @@
 //
 
 import Cocoa
+import Combine
 
 class PlayView: NSControl {
     let playButton = NSButton()
     let songLabel = Label()
     let stationLabel = Label()
     let onlyStationLabel = Label()
+    let artworkView = NSImageView()
+    private var artworkWidthConstraint: NSLayoutConstraint!
+    private var artworkLeadingConstraint: NSLayoutConstraint!
     private var hideSongWorkItem: DispatchWorkItem?
+    private var artworkSubscription: AnyCancellable?
+    private var appleMusicSubscription: AnyCancellable?
 
     /* ****************************************
      *
@@ -21,6 +27,7 @@ class PlayView: NSControl {
         super.init(frame: .zero)
 
         addSubview(playButton)
+        addSubview(artworkView)
         addSubview(songLabel)
         addSubview(stationLabel)
         addSubview(onlyStationLabel)
@@ -62,10 +69,23 @@ class PlayView: NSControl {
         onlyStationLabel.lineBreakMode = .byTruncatingTail
         onlyStationLabel.usesSingleLineMode = true
 
+        artworkView.imageScaling = .scaleAxesIndependently
+        artworkView.wantsLayer = true
+        artworkView.layer?.cornerRadius = 4
+        artworkView.layer?.masksToBounds = true
+        artworkView.isHidden = true
+
+        let artworkClick = NSClickGestureRecognizer(target: self, action: #selector(artworkClicked))
+        artworkView.addGestureRecognizer(artworkClick)
+
         playButton.translatesAutoresizingMaskIntoConstraints = false
+        artworkView.translatesAutoresizingMaskIntoConstraints = false
         songLabel.translatesAutoresizingMaskIntoConstraints = false
         stationLabel.translatesAutoresizingMaskIntoConstraints = false
         onlyStationLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        artworkWidthConstraint = artworkView.widthAnchor.constraint(equalToConstant: 0)
+        artworkLeadingConstraint = artworkView.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 0)
 
         NSLayoutConstraint.activate([
             playButton.widthAnchor.constraint(equalToConstant: 42),
@@ -73,12 +93,17 @@ class PlayView: NSControl {
             playButton.leadingAnchor.constraint(equalTo: leadingAnchor),
             playButton.centerYAnchor.constraint(equalTo: centerYAnchor),
 
-            songLabel.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 8),
+            artworkWidthConstraint,
+            artworkView.heightAnchor.constraint(equalToConstant: 38),
+            artworkLeadingConstraint,
+            artworkView.centerYAnchor.constraint(equalTo: centerYAnchor),
+
+            songLabel.leadingAnchor.constraint(equalTo: artworkView.trailingAnchor, constant: 8),
             songLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             songLabel.bottomAnchor.constraint(equalTo: centerYAnchor, constant: -1),
             songLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 151),
 
-            stationLabel.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 8),
+            stationLabel.leadingAnchor.constraint(equalTo: artworkView.trailingAnchor, constant: 8),
             stationLabel.trailingAnchor.constraint(equalTo: songLabel.trailingAnchor),
             stationLabel.topAnchor.constraint(equalTo: centerYAnchor, constant: 2),
 
@@ -99,6 +124,23 @@ class PlayView: NSControl {
                                                selector: #selector(refresh),
                                                name: Notification.Name.PlayerMetadataChanged,
                                                object: nil)
+
+        artworkSubscription = ArtworkFetcher.shared.$artworkImage
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] image in
+                guard let self = self else { return }
+                self.artworkView.image = image
+                self.updateArtworkVisibility()
+            }
+
+        appleMusicSubscription = ArtworkFetcher.shared.$appleMusicURL
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] url in
+                guard let self = self else { return }
+                self.artworkView.toolTip = url != nil
+                    ? NSLocalizedString("Open in Apple Music", comment: "Artwork tooltip")
+                    : nil
+            }
 
         refrreshLabels()
     }
@@ -168,6 +210,25 @@ class PlayView: NSControl {
         onlyStationLabel.isVisible = songLabel.stringValue.isEmpty
         songLabel.isVisible = !onlyStationLabel.isVisible
         stationLabel.isVisible = !onlyStationLabel.isVisible
+        updateArtworkVisibility()
+    }
+
+    /* ****************************************
+     *
+     * ****************************************/
+    private func updateArtworkVisibility() {
+        let show = player.status == .playing && artworkView.image != nil
+        artworkView.isHidden = !show
+        artworkWidthConstraint.constant = show ? 38 : 0
+        artworkLeadingConstraint.constant = show ? 4 : 0
+    }
+
+    /* ****************************************
+     *
+     * ****************************************/
+    @objc private func artworkClicked() {
+        guard let url = ArtworkFetcher.shared.appleMusicURL else { return }
+        NSWorkspace.shared.open(url)
     }
 
     /* ****************************************

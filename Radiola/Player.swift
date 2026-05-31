@@ -218,6 +218,7 @@ class Player: NSObject {
     /* ****************************************
      *
      * ****************************************/
+    @MainActor
     private func handleEvent(_ event: FFPlayer.Event) {
         switch event {
             case let .stateChanged(state):
@@ -234,6 +235,7 @@ class Player: NSObject {
     /* ****************************************
      *
      * ****************************************/
+    @MainActor
     private func stateChenged(_ state: FFPlayer.State) {
         debug("Player status changed \(state.description) for \(station?.url ?? "nil")")
 
@@ -265,6 +267,7 @@ class Player: NSObject {
     // ****************************************
     // Metadata
     // ****************************************
+    @MainActor
     private func metadataChanged(_ nowPlaing: String?) {
         songTitle = cleanTrackMetadata(raw: nowPlaing ?? "")
         if isPlaying && nowPlaing != nil {
@@ -275,6 +278,12 @@ class Player: NSObject {
             name: Notification.Name.PlayerMetadataChanged,
             object: nil,
             userInfo: ["title": songTitle])
+
+        if nowPlaing?.isEmpty != false {
+            ArtworkFetcher.shared.clear()
+        } else if isPlaying && !songTitle.isEmpty {
+            ArtworkFetcher.shared.fetch(for: songTitle)
+        }
     }
 
     /* ****************************************

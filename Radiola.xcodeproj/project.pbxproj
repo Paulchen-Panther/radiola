@@ -38,6 +38,8 @@
 		394F8A6428739A15005EA7FA /* StationsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 394F8A6228739A15005EA7FA /* StationsWindow.xib */; };
 		3950012F2FAF5A7E0029DF9B /* Popover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3950012E2FAF5A7E0029DF9B /* Popover.swift */; };
 		395001312FAFB4AA0029DF9B /* PlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395001302FAFB4AA0029DF9B /* PlayView.swift */; };
+		39CA000B2FCA00000054A0CE /* ArtworkFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39CA000A2FCA00000054A0CE /* ArtworkFetcher.swift */; };
+		39CA000D2FCA00000054A0CE /* TestArtworkFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39CA000C2FCA00000054A0CE /* TestArtworkFetcher.swift */; };
 		395001332FB234B70029DF9B /* PopoverItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395001322FB234B70029DF9B /* PopoverItem.swift */; };
 		39541B34287623F200A2A5CB /* AddStationDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39541B32287623F200A2A5CB /* AddStationDialog.swift */; };
 		395766262FC6E3A8002BC049 /* Label.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395766252FC6E3A8002BC049 /* Label.swift */; };
@@ -156,6 +158,8 @@
 		394F8A6C2873A2FE005EA7FA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		3950012E2FAF5A7E0029DF9B /* Popover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popover.swift; sourceTree = "<group>"; };
 		395001302FAFB4AA0029DF9B /* PlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayView.swift; sourceTree = "<group>"; };
+		39CA000A2FCA00000054A0CE /* ArtworkFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkFetcher.swift; sourceTree = "<group>"; };
+		39CA000C2FCA00000054A0CE /* TestArtworkFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestArtworkFetcher.swift; sourceTree = "<group>"; };
 		395001322FB234B70029DF9B /* PopoverItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverItem.swift; sourceTree = "<group>"; };
 		39541B32287623F200A2A5CB /* AddStationDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStationDialog.swift; sourceTree = "<group>"; };
 		395766252FC6E3A8002BC049 /* Label.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Label.swift; sourceTree = "<group>"; };
@@ -340,6 +344,7 @@
 				390C7293287B213200E17BAE /* Controls.swift */,
 				39D582C52C96C49B00AE3A01 /* VolumeView.swift */,
 				395001302FAFB4AA0029DF9B /* PlayView.swift */,
+				39CA000A2FCA00000054A0CE /* ArtworkFetcher.swift */,
 				394F8A56287394F1005EA7FA /* Notifications.swift */,
 				39D79E622933BEAB00210D94 /* Settings.swift */,
 				39E8DFD62890839500082467 /* Updater.swift */,
@@ -380,6 +385,7 @@
 				3959DBB52C03335C0032A1BA /* TestTrackMetadata.swift */,
 				3959DBAF2BFCE6C30032A1BA /* TestStationMerger.swift */,
 				398D34E52F40A49C00C9768B /* TestPlayList.swift */,
+				39CA000C2FCA00000054A0CE /* TestArtworkFetcher.swift */,
 			);
 			path = RadiolaTests;
 			sourceTree = "<group>";
@@ -653,6 +659,7 @@
 				39EF8B9E2BCC151A00733571 /* PlayMenuItem.swift in Sources */,
 				3962D0342BE688130014BCFB /* Name.swift in Sources */,
 				395001312FAFB4AA0029DF9B /* PlayView.swift in Sources */,
+				39CA000B2FCA00000054A0CE /* ArtworkFetcher.swift in Sources */,
 				39A7940A2B4B646D000D9875 /* InternetStations.swift in Sources */,
 				39E70DE62AD9E1CA00BF3059 /* RadioBrowserServer.swift in Sources */,
 				39A7940E2B4B647E000D9875 /* RadioBrowserProvider.swift in Sources */,
@@ -712,6 +719,7 @@
 				3959DBB62C03335C0032A1BA /* TestTrackMetadata.swift in Sources */,
 				3959DBA92BFCE6A50032A1BA /* RadiolaTests.swift in Sources */,
 				398D34E62F40A49C00C9768B /* TestPlayList.swift in Sources */,
+				39CA000D2FCA00000054A0CE /* TestArtworkFetcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

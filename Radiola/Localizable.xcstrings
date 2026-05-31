@@ -1899,6 +1899,35 @@
         }
       }
     },
+    "Open in Apple Music" : {
+      "comment" : "Artwork tooltip",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Apple Music öffnen"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri in Apple Music"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть в Apple Music"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Apple Music 中打开"
+          }
+        }
+      }
+    },
     "Open Radiola…" : {
       "comment" : "Status bar menu item",
       "localizations" : {

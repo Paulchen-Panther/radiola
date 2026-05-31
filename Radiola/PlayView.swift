@@ -14,6 +14,8 @@ class PlayView: NSControl {
     let stationLabel = Label()
     let onlyStationLabel = Label()
     let artworkView = NSImageView()
+    private var artworkWidthConstraint: NSLayoutConstraint!
+    private var artworkLeadingConstraint: NSLayoutConstraint!
     private var hideSongWorkItem: DispatchWorkItem?
     private var artworkSubscription: AnyCancellable?
     private var appleMusicSubscription: AnyCancellable?
@@ -82,15 +84,18 @@ class PlayView: NSControl {
         stationLabel.translatesAutoresizingMaskIntoConstraints = false
         onlyStationLabel.translatesAutoresizingMaskIntoConstraints = false
 
+        artworkWidthConstraint = artworkView.widthAnchor.constraint(equalToConstant: 0)
+        artworkLeadingConstraint = artworkView.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 0)
+
         NSLayoutConstraint.activate([
             playButton.widthAnchor.constraint(equalToConstant: 42),
             playButton.heightAnchor.constraint(equalToConstant: 38),
             playButton.leadingAnchor.constraint(equalTo: leadingAnchor),
             playButton.centerYAnchor.constraint(equalTo: centerYAnchor),
 
-            artworkView.widthAnchor.constraint(equalToConstant: 38),
+            artworkWidthConstraint,
             artworkView.heightAnchor.constraint(equalToConstant: 38),
-            artworkView.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 4),
+            artworkLeadingConstraint,
             artworkView.centerYAnchor.constraint(equalTo: centerYAnchor),
 
             songLabel.leadingAnchor.constraint(equalTo: artworkView.trailingAnchor, constant: 8),
@@ -125,7 +130,7 @@ class PlayView: NSControl {
             .sink { [weak self] image in
                 guard let self = self else { return }
                 self.artworkView.image = image
-                self.artworkView.isHidden = player.status != .playing || image == nil
+                self.updateArtworkVisibility()
             }
 
         appleMusicSubscription = ArtworkFetcher.shared.$appleMusicURL
@@ -205,6 +210,17 @@ class PlayView: NSControl {
         onlyStationLabel.isVisible = songLabel.stringValue.isEmpty
         songLabel.isVisible = !onlyStationLabel.isVisible
         stationLabel.isVisible = !onlyStationLabel.isVisible
+        updateArtworkVisibility()
+    }
+
+    /* ****************************************
+     *
+     * ****************************************/
+    private func updateArtworkVisibility() {
+        let show = player.status == .playing && artworkView.image != nil
+        artworkView.isHidden = !show
+        artworkWidthConstraint.constant = show ? 38 : 0
+        artworkLeadingConstraint.constant = show ? 4 : 0
     }
 
     /* ****************************************
